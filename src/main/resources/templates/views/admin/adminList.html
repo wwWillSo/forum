@@ -1,0 +1,78 @@
+<!DOCTYPE html>  
+<html xmlns:th="http://www.thymeleaf.org">
+<meta charset="UTF-8"/>
+<head>
+	<title>FORUM</title>
+	<!-- 新 Bootstrap 核心 CSS 文件 -->
+	<link rel="stylesheet" href="/plugins/bootstrap-3.3.5-dist/css/bootstrap.min.css"/>
+	
+	<link href="/plugins/Wopop_files/style_log.css" rel="stylesheet" type="text/css"/>
+	
+	<!-- jQuery文件。务必在bootstrap.min.js 之前引入 -->
+	<script src="/plugins/jquery/jquery-1.11.3.min.js"></script>
+	<style>
+	.center {
+		display:table;
+		margin-left:auto;
+		margin-right:auto;
+	}
+	.margin-right-30px {
+		margin-right:30px ;
+	}
+	</style>
+</head>
+<body class="login" mycollectionplug="bind">
+	
+	<button id="goto-createAdmin" type="button" class="btn btn-primary" style="display:inline;float:right;">新增管理员</button>
+	<form id="form" action="/admin/gotoAdminList" method="post" class="form-inline">
+		<div class="form-group">
+			<label for="keyword">关键字</label>
+		    <input type="text" th:value="${contactsPage.keyword}" class="form-control" id="keyword" name="keyword" placeholder="keyword"/>
+		</div>
+		<button type="submit" class="btn btn-primary">搜索</button>
+	</form>
+	
+	<table class="table table-bordered table-hover" style="background-color: white;">
+		<tr>
+			<td>编号</td>
+			<td>管理员</td>
+			<td>注册日期</td>
+		</tr>
+		<tr	th:each="obj, objStatus:${contactsPage.object}">
+			<td th:text="${objStatus.index + 1}"></td>
+			<td th:text="${obj.adminName}"></td>
+			<td th:text="${#dates.format(obj.createTime, 'yyyy-MM-dd HH:mm:ss')}"></td>
+		</tr>
+	</table>
+
+	<div class="table-pagination center">
+	    <ul class="pagination">
+	        <li th:class="${contactsPage.number eq 0} ? 'disabled' : ''">
+	            <a th:if="${not contactsPage.firstPage}" th:href="@{${'/admin/gotoAdminList'}(page=${contactsPage.number-1},size=${contactsPage.size},keyword=${contactsPage.keyword})}">Previous</a>
+	            <a th:if="${contactsPage.firstPage}" href="javascript:void(0);">Previous</a>
+	        </li>
+	
+	        <li th:each="pageNo : ${#numbers.sequence(0, contactsPage.totalPages - 1)}" th:class="${contactsPage.number eq pageNo}? 'active' : ''">
+	            <a th:if="${contactsPage.number  eq pageNo}" href="javascript:void(0);">
+	                <span th:text="${pageNo + 1}"></span>
+	            </a>
+	            <a th:if="${not (contactsPage.number  eq pageNo)}" th:href="@{${'/admin/gotoAdminList'}(page=${pageNo},size=${contactsPage.size},keyword=${contactsPage.keyword})}">
+	                <span th:text="${pageNo + 1}"></span>
+	            </a>
+	
+	        </li>
+	        <li th:class="${contactsPage.number + 1 ge contactsPage.totalPages} ? 'disabled' : ''">
+	            <a th:if="${not contactsPage.lastPage}" th:href="@{${'/admin/gotoAdminList'}(page=${contactsPage.number+1},size=${contactsPage.size},keyword=${contactsPage.keyword})}">Next</a>
+	            <a th:if="${contactsPage.lastPage}" href="javascript:void(0);">Next</a>
+	        </li>
+	    </ul>
+	</div>
+	<script>
+		$('#goto-createAdmin').click(function (e) {
+			window.location.href = '/admin/gotoCreateAdmin'
+		})
+	</script>
+	<!-- 最新的 Bootstrap 核心 JavaScript 文件 -->
+	<script src="/plugins/bootstrap-3.3.5-dist/js/bootstrap.min.js"></script>
+</body>
+</html>

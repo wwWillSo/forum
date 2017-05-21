@@ -1,0 +1,67 @@
+<!DOCTYPE html>  
+<html xmlns:th="http://www.thymeleaf.org">
+<meta charset="UTF-8"/>
+<head>
+	<title>FORUM</title>
+	<!-- 新 Bootstrap 核心 CSS 文件 -->
+	<link rel="stylesheet" href="/plugins/bootstrap-3.3.5-dist/css/bootstrap.min.css"/>
+	
+	<link href="/plugins/Wopop_files/style_log.css" rel="stylesheet" type="text/css"/>
+	
+	<!-- jQuery文件。务必在bootstrap.min.js 之前引入 -->
+	<script src="/plugins/jquery/jquery-1.11.3.min.js"></script>
+	
+	<style>
+	.center {
+		display:table ;
+		margin-left:auto ;
+		margin-right:auto ;
+		margin-top:50px ;
+	}
+	h1 {font-size: 28px ;}
+	.space-row {height : 15px ;}
+	.space-col {width : 15px ;}
+	.title {font-weight: bold;}
+	
+	.postContent {
+		width : 800px;
+		height : 300px ;
+		background-color: white ;
+	}
+	
+	.width-800px {
+		width: 800px ;
+	}
+	
+	hr {
+		height : 1px ;
+	}
+	
+</style>
+</head>
+<body class="login" mycollectionplug="bind">
+
+	<div class="center">
+		<h1 th:text="${post.postTitle}" class="center"></h1>
+		<div class="space-row"></div>
+		<span th:text="'发布者：' + ${post.loginName}"></span><span style="float:right;" th:text="${#dates.format(post.postCreateTime, 'yyyy-MM-dd HH:mm:ss')}"></span>
+		<div class="space-row"></div>
+		<div class="postContent" th:utext="${post.postContent}"></div>
+		<div class="space-row"></div>
+		<div class="" th:text="'点赞用户：' + ${post.likeContent} + '等' + ${post.countLike} + '人'"></div>
+		<div class="space-row"></div>
+		<div class="width-800px">
+			<span>评论列表：</span><br/>
+			<div th:each="comment : ${post.commentList}">
+				<div class="form-group">
+					<p th:text="${comment.loginName} + '：' + ${comment.content}"></p>
+				</div>
+				<span style="float:right;" th:text="${#dates.format(comment.createTime, 'yyyy-MM-dd HH:mm:ss')}"></span>
+			</div>
+		</div>
+	</div>
+	
+	<!-- 最新的 Bootstrap 核心 JavaScript 文件 -->
+	<script src="/plugins/bootstrap-3.3.5-dist/js/bootstrap.min.js"></script>
+</body>
+</html>

@@ -1,0 +1,116 @@
+<!DOCTYPE html>  
+<html xmlns:th="http://www.thymeleaf.org">
+<meta charset="UTF-8"/>
+<head>
+	<title>FORUM</title>
+	<!-- 新 Bootstrap 核心 CSS 文件 -->
+	<link rel="stylesheet" href="/plugins/bootstrap-3.3.5-dist/css/bootstrap.min.css"/>
+	
+	<link href="/plugins/Wopop_files/style_log.css" rel="stylesheet" type="text/css"/>
+	
+	<!-- jQuery文件。务必在bootstrap.min.js 之前引入 -->
+	<script src="/plugins/jquery/jquery-1.11.3.min.js"></script>
+	<style>
+	.center {
+		display:table;
+		margin-left:auto;
+		margin-right:auto;
+	}
+	.margin-right-30px {
+		margin-right:30px ;
+	}
+	</style>
+</head>
+<body class="login" mycollectionplug="bind">
+	
+	<form id="form" action="/admin/gotoPostList" method="post" class="form-inline">
+		<div class="form-group">
+			<select name="postType" id="postType" class="form-control">
+				<option value="0">全部</option>
+				<option th:each="type:${typeList}" th:value="${type.postTypeId}" th:text="${type.postTypeName}" th:selected="${type.postTypeId == contactsPage.type}"></option>
+			</select>
+		</div>
+		<div class="form-group">
+			<label for="keyword">关键字</label>
+		    <input type="text" th:value="${contactsPage.keyword}" class="form-control" id="keyword" name="keyword" placeholder="keyword"/>
+		</div>
+		<button type="submit" class="btn btn-primary">搜索</button>
+	</form>
+	
+	<table class="table table-bordered table-hover" style="background-color: white;">
+		<tr>
+			<td>编号</td>
+			<td>标题</td>
+			<td>类型</td>
+			<td>发布时间</td>
+			<td>发布人</td>
+			<td>点赞数</td>
+			<td>评论数</td>
+			<td>操作</td>
+		</tr>
+		<tr	th:each="obj, objStatus:${contactsPage.object}">
+			<td th:text="${objStatus.index + 1}"></td>
+			<td th:text="${obj.postTitle}"></td>
+			<td th:text="${obj.postTypeName}"></td>
+			<td th:text="${#dates.format(obj.postUpdateTime, 'yyyy-MM-dd HH:mm:ss')}"></td>
+			<td th:text="${obj.loginName}"></td>
+			<td th:text="${obj.countLike}"></td>
+			<td th:text="${obj.countComment}"></td>
+			<td th:attr="data-id=${obj.postId}">
+				<span class="detail margin-right-30px">详情</span>
+				<span class="delete margin-right-30px">删除</span>
+			</td>
+		</tr>
+	</table>
+
+	<div class="table-pagination center">
+	    <ul class="pagination">
+	        <li th:class="${contactsPage.number eq 0} ? 'disabled' : ''">
+	            <a th:if="${not contactsPage.firstPage}" th:href="@{${'/admin/gotoPostList'}(page=${contactsPage.number-1},size=${contactsPage.size},postType=${contactsPage.type},keyword=${contactsPage.keyword})}">Previous</a>
+	            <a th:if="${contactsPage.firstPage}" href="javascript:void(0);">Previous</a>
+	        </li>
+	
+	        <li th:each="pageNo : ${#numbers.sequence(0, contactsPage.totalPages - 1)}" th:class="${contactsPage.number eq pageNo}? 'active' : ''">
+	            <a th:if="${contactsPage.number  eq pageNo}" href="javascript:void(0);">
+	                <span th:text="${pageNo + 1}"></span>
+	            </a>
+	            <a th:if="${not (contactsPage.number  eq pageNo)}" th:href="@{${'/admin/gotoPostList'}(page=${pageNo},size=${contactsPage.size},postType=${contactsPage.type},keyword=${contactsPage.keyword})}">
+	                <span th:text="${pageNo + 1}"></span>
+	            </a>
+	
+	        </li>
+	        <li th:class="${contactsPage.number + 1 ge contactsPage.totalPages} ? 'disabled' : ''">
+	            <a th:if="${not contactsPage.lastPage}" th:href="@{${'/admin/gotoPostList'}(page=${contactsPage.number+1},size=${contactsPage.size},postType=${contactsPage.type},keyword=${contactsPage.keyword})}">Next</a>
+	            <a th:if="${contactsPage.lastPage}" href="javascript:void(0);">Next</a>
+	        </li>
+	    </ul>
+	</div>
+	<script>
+		$('.detail').click(function (e) {
+			var postId = $(this).parent().attr('data-id')
+			
+			window.location.href = '/admin/gotoPostDetail/' + postId
+		})
+		$('.delete').click(function(e) {
+			var postId = $(this).parent().attr('data-id')
+			
+			if (window.confirm('确定要删除吗？')) {
+				$.ajax({
+					url : '/admin/deletePost/' + postId,
+					async : false ,
+					success : function (result) {
+						if (result == 'SUCCESS') {
+							alert('删除成功')
+							window.location.reload()
+						} else {
+							alert('未登录')
+						}
+					}
+				})
+			}
+		})
+	</script>
+	<!-- 最新的 Bootstrap 核心 JavaScript 文件 -->
+	<script src="/plugins/bootstrap-3.3.5-dist/js/bootstrap.min.js"></script>
+</body>
+</html>

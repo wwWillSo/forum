@@ -1,0 +1,92 @@
+<!DOCTYPE html>  
+<html xmlns:th="http://www.thymeleaf.org">
+<meta charset="UTF-8"/>
+<head>
+	<title>FORUM</title>
+	<!-- 新 Bootstrap 核心 CSS 文件 -->
+	<link rel="stylesheet" href="/plugins/bootstrap-3.3.5-dist/css/bootstrap.min.css"/>
+	
+	<link href="/plugins/Wopop_files/style_log.css" rel="stylesheet" type="text/css"/>
+	
+	<!-- jQuery文件。务必在bootstrap.min.js 之前引入 -->
+	<script src="/plugins/jquery/jquery-1.11.3.min.js"></script>
+</head>
+<body class="login" mycollectionplug="bind">
+	<div class="login_m">
+		<div class="login_logo"><img src="/plugins/Wopop_files/logo.png" width="196" height="46"/></div>
+		<div class="login_boder">
+			<div class="login_padding" id="login_model">
+			  	<form action="/user/userLogin">
+			  		<div class="form-group">
+					    <label for="username">用户名</label>
+					    <input type="text" class="form-control" id="username" placeholder="username"/>
+				  	</div>
+				  	<div class="form-group">
+					    <label for="password">Password</label>
+					    <input type="password" class="form-control" id="password" placeholder="password"/>
+				 	 </div>
+				 	 <div style="float:right;">
+				  		<button id="login_confirm" type="button" class="btn btn-primary">登录</button>
+				  		<button id="goto-register" type="button" class="btn btn-primary">注册</button>
+					</div>
+				</form>
+			</div>
+		</div>
+	</div>
+	
+	<script>
+		$('#login_confirm').click(function (e) {
+			var username = $('#username').val() 
+			var password = $('#password').val() 
+			
+			if (username == '') 
+				alert('用户名不能为空')
+			else if (password == '')
+				alert('密码不能为空')
+			else {
+				
+				$.ajax({
+					url : '/passwordTransformer?password=' + password ,
+					async : false ,
+					success : function(data) {
+						console.log(data)
+						password = data 
+					}
+				})
+				
+				var jsonData = null ;
+				
+				var data = {
+					"username" : username,
+					"password" : password
+				}
+				
+				$.ajax({
+					url : '/user/userLogin',
+		    		type : 'POST',
+		    		dataType : 'json',
+		    		data : JSON.stringify(data) ,
+		    		async : false ,
+		    		contentType:"application/json",
+		    		success : function (data, status, xhr) {
+		    			console.log(data)
+		    			jsonData = data ;
+		    		}
+				})
+				
+				if (jsonData.statusCode == 'SUCCESS') {
+					window.location.href = jsonData.redirectUrl
+				} else {
+					alert(jsonData.desc)
+				}
+			}
+		})
+		
+		$('#goto-register').click(function (e) {
+			window.location.href = '/gotoRegister' ;
+		})
+	</script>
+	<!-- 最新的 Bootstrap 核心 JavaScript 文件 -->
+	<script src="/plugins/bootstrap-3.3.5-dist/js/bootstrap.min.js"></script>
+</body>
+</html>

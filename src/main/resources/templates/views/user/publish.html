@@ -1,0 +1,64 @@
+<!DOCTYPE html>  
+<html xmlns:th="http://www.thymeleaf.org">
+<meta charset="UTF-8"/>
+<head>
+	<title>FORUM</title>
+	<!-- 新 Bootstrap 核心 CSS 文件 -->
+	<link rel="stylesheet" href="/plugins/bootstrap-3.3.5-dist/css/bootstrap.min.css"/>
+	
+	<link href="/plugins/Wopop_files/style_log.css" rel="stylesheet" type="text/css"/>
+	
+	<!-- jQuery文件。务必在bootstrap.min.js 之前引入 -->
+	<script src="/plugins/jquery/jquery-1.11.3.min.js"></script>
+	
+	<style>
+	.center {
+		display:table ;
+		margin-left:auto ;
+		margin-right:auto ;
+		margin-top:50px ;
+	}
+	h1 {font-size: 28px ;}
+	.space-row {height : 15px ;}
+	.space-col {width : 15px ;}
+	.title {font-weight: bold;}
+	
+	.postContent {
+		width : 800px;
+		background-color: white ;
+	}
+</style>
+</head>
+<body class="login" mycollectionplug="bind">
+	<div class="center">
+		<form id="form" action="/user/publish">
+	  		<div class="form-group">
+			    <label for="postTitle">标题</label>
+			    <input type="text" class="form-control" id="postTitle" name="postTitle" placeholder="postTitle"/>
+		  	</div>
+		  	<div class="form-group">
+				<select name="postType" id="postType" class="form-control">
+					<option value="0">全部</option>
+					<option th:each="type:${typeList}" th:value="${type.postTypeId}" th:text="${type.postTypeName}"></option>
+				</select>
+			</div>
+		  	<div class="form-group">
+			    <label for="postContent">内容</label>
+			    <textarea class="form-control postContent" rows="10" name="postContent" placeholder="postContent"></textarea>
+		  	</div>
+		 	 <div style="float:right;">
+		  		<button id="publish_confirm" type="button" class="btn btn-primary">发布</button>
+			</div>
+		</form>
+	</div>
+	<script>
+		$('#publish_confirm').click(function (e) {
+			if (window.confirm('确定要发布吗？')) {
+				$('#form').submit() ;
+			}
+		})
+	</script>
+	<!-- 最新的 Bootstrap 核心 JavaScript 文件 -->
+	<script src="/plugins/bootstrap-3.3.5-dist/js/bootstrap.min.js"></script>
+</body>
+</html>
